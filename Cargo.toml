@@ -1,0 +1,24 @@
+[package]
+name = "bevy-debug-text-overlay"
+authors = ["Nicola Papale"]
+description = "A convenient on-screen message print macro for bevy"
+license = "Apache-2.0"
+readme = "Readme.md"
+keywords = ["bevy", "debug", "overlay", "message"]
+categories = ["game-development", "development-tools"]
+repository = "https://github.com/nicopap/bevy-debug-text-overlay"
+version = "1.0.0"
+edition = "2021"
+
+[features]
+debug = ["lazy_static"]
+builtin-font = []
+default = ["debug", "builtin-font"]
+
+[dependencies]
+bevy = { version = "0.6.0", default-features = false, features = ["render"] }
+lazy_static = { version = "1.4", optional = true }
+
+[dev-dependencies]
+bevy = { version = "0.6.0", default-features = false, features = ["render", "x11"] }
+# bevy-inspector-egui = { version = "0.8" }
