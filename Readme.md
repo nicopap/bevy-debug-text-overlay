@@ -70,6 +70,22 @@ This should look like as follow:
 
 https://user-images.githubusercontent.com/26321040/158537677-e9339fd0-3bed-4a83-a4cc-bc1340e5d78b.mp4
 
+### Cargo features
+
+#### `builtin-font`
+
+The plugin provides its own ascii font by default, but if you want to disable
+it, you can disable the `builtin-font` cargo feature.
+
+#### `debug`
+
+It is possible to replace `screen_print!` by an empty macro by disabling the
+`debug` cargo feature. This also disables all of `bevy-debug-text-overlay`
+dependencies, since there is no code to run.
+
+No further action is required to completely disable the plugin. Mock
+implementations are provided for release mod.
+
 ## Notes on performance
 
 It seems that built without compiler optimization, displaying text on screen in
@@ -97,22 +113,6 @@ I'm welcoming contributions if you have any fixes:
 This is a tinny crate so it's literally impossible to cause major breaking
 changes. But I'm not convinced the current macro API is optimal, and it might
 change in the future.
-
-### Cargo features
-
-#### `builtin-font`
-
-The plugin provides its own ascii font by default, but if you want to disable
-it, you can disable the `builtin-font` cargo feature.
-
-#### `debug`
-
-It is possible to replace `screen_print!` by an empty macro by disabling the
-`debug` cargo feature. This also disables all of `bevy-debug-text-overlay`
-dependencies, since there is no code to run.
-
-No further action is required to completely disable the plugin. Mock
-implementations are provided for release mod.
 
 ## License
 
