@@ -142,3 +142,8 @@ change in the future.
 ## License
 
 This library is licensed under Apache 2.0.
+
+### Font
+
+The font in `screen_debug_text.ttf` is derived from Adobe SourceSans, licensed
+under the SIL OFL. see file at `licenses/SIL Open Font License.txt`.
