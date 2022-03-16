@@ -17,6 +17,11 @@ println-debugger, you will love this crate when working with bevy!
 
 ## Usage
 
+```toml
+[dependencies]
+bevy-debug-text-overlay = "1.0"
+```
+
 This bevy plugin is fairly trivial to use. You must:
 1. Add the `OverlayPlugin` to your app
 2. Add a `UiCameraBundle` entity
@@ -85,6 +90,26 @@ dependencies, since there is no code to run.
 
 No further action is required to completely disable the plugin. Mock
 implementations are provided for release mod.
+
+To use that feature, you can setup your `Cargo.toml` as follow:
+
+```toml
+# Add a debug feature to your own Cargo.toml, make it default
+[features]
+debug = ["bevy-debug-text-overlay/debug"]
+default = ["debug"]
+
+# Manually specify features for bevy-debug-text-overlay (omitting "debug")
+bevy-debug-text-overlay = { version = "1.0", default-features = false, features = ["builtin-font"] }
+```
+
+Now when making your release build, you should use
+```sh
+cargo build --release --no-default-features
+```
+
+I'm aware that it can be cumbersome for some, please fill an issue if this
+really doesn't mix well with your own workflow.
 
 ## Notes on performance
 
