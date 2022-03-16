@@ -68,7 +68,7 @@ fn screen_print_text(time: Res<Time>) {
 
 This should look like as follow:
 
-![Readme code demo](https://user-images.githubusercontent.com/26321040/158537677-e9339fd0-3bed-4a83-a4cc-bc1340e5d78b.mp4)
+https://user-images.githubusercontent.com/26321040/158537677-e9339fd0-3bed-4a83-a4cc-bc1340e5d78b.mp4
 
 ## Notes on performance
 
