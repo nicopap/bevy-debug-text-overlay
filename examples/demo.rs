@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::render::camera::RenderTarget;
 use bevy_debug_text_overlay::{screen_print, OverlayPlugin};
 
 fn main() {
@@ -94,17 +95,19 @@ fn show_cursor_position(
     let at_interval = |t: f64| current_time % t < delta;
     if at_interval(0.5) {
         let (camera, camera_transform) = camera.single();
-        let window = windows.get(camera.window).unwrap();
-        if let Some(screen_pos) = window.cursor_position() {
-            let window_size = Vec2::new(window.width(), window.height());
-            let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
-            let ndc_to_world =
-                camera_transform.compute_matrix() * camera.projection_matrix.inverse();
-            let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
-            let world_pos: Vec2 = world_pos.truncate();
+        if let RenderTarget::Window(window) = camera.target {
+            let window = windows.get(window).unwrap();
+            if let Some(screen_pos) = window.cursor_position() {
+                let window_size = Vec2::new(window.width(), window.height());
+                let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
+                let ndc_to_world =
+                    camera_transform.compute_matrix() * camera.projection_matrix.inverse();
+                let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
+                let world_pos: Vec2 = world_pos.truncate();
 
-            screen_print!("World coords: {:.3}/{:.3}", world_pos.x, world_pos.y);
-            screen_print!("Window coords: {:.3}/{:.3}", screen_pos.x, screen_pos.y);
+                screen_print!("World coords: {:.3}/{:.3}", world_pos.x, world_pos.y);
+                screen_print!("Window coords: {:.3}/{:.3}", screen_pos.x, screen_pos.y);
+            }
         }
     }
 }

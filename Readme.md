@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "1.0"
+bevy-debug-text-overlay = "2.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -100,7 +100,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "1.0", default-features = false, features = ["builtin-font"] }
+bevy-debug-text-overlay = { version = "2.0", default-features = false, features = ["builtin-font"] }
 ```
 
 Now when making your release build, you should use
@@ -132,6 +132,18 @@ I'm welcoming contributions if you have any fixes:
   app :(
 * You can't set it up so that it's displayed from the bottom up or to the
   right of the screen.
+
+## Changelog
+
+* `2.0.0`: **Breaking**: bump bevy version to `0.7` (you should be able to
+  upgrade from `1.0.0` without changing your code)
+
+### Version matrix
+
+| bevy | latest supporting version      |
+|------|--------|
+| 0.7  | 2.0.0 |
+| 0.6  | 1.0.0 |
 
 ## API stability warning
 
