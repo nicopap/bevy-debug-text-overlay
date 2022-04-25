@@ -123,8 +123,8 @@ builds](https://bevy-cheatbook.github.io/pitfalls/performance.html).
 ## Known limitations
 
 I'm welcoming contributions if you have any fixes:
-* There is a chance that the `Blocks` algo may accumulate small differences in
-  gaps in the text lines and become bloated.
+* There is no way to specify the overlay position with regard to user-defined
+  UI, so you might end up with the debug text showing behind your own UI.
 * There is a very custom, very dodgy resource allocation module. If someone can
   link me to a good 1D res alloc crate, I'd be happy to use it instead of
   `block`.
