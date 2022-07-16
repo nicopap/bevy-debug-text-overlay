@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "2.0"
+bevy-debug-text-overlay = "3.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -42,14 +42,13 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // !!!!IMPORTANT!!!! Add the OverlayPlugin here
-        .add_plugin(OverlayPlugin { font_size: 32.0, ..Default::default() })
+        .add_plugin(OverlayPlugin { font_size: 32.0, ..default() })
         .add_startup_system(setup)
         .add_system(screen_print_text)
         .run();
 }
 fn setup(mut commands: Commands) {
-    // !!!!IMPORTANT!!!! you must add a UiCameraBundle if you didn't already
-    commands.spawn_bundle(UiCameraBundle::default());
+    commands.spawn_bundle(Camera2dBundle::default());
 }
 // Notice how we didn't have to add any special system parameters
 fn screen_print_text(time: Res<Time>) {
@@ -100,7 +99,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "2.0", default-features = false, features = ["builtin-font"] }
+bevy-debug-text-overlay = { version = "3.0", default-features = false, features = ["builtin-font"] }
 ```
 
 Now when making your release build, you should use
@@ -137,11 +136,14 @@ I'm welcoming contributions if you have any fixes:
 
 * `2.0.0`: **Breaking**: bump bevy version to `0.7` (you should be able to
   upgrade from `1.0.0` without changing your code)
+* `3.0.0`: **Breaking**: bump bevy version to `0.8` (you should be able to
+  upgrade from `2.0.0` without changing your code)
 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.8  | 3.0.0 |
 | 0.7  | 2.0.0 |
 | 0.6  | 1.0.0 |
 

@@ -22,8 +22,7 @@ struct ForShow {
 }
 
 fn setup(mut commands: Commands) {
-    // !!!!IMPORTANT!!!! you must add a UiCameraBundle if you didn't already
-    commands.spawn_bundle(UiCameraBundle::default());
+    commands.spawn_bundle(Camera2dBundle::default());
 }
 
 fn screen_print_text(time: Res<Time>) {
@@ -101,7 +100,7 @@ fn show_cursor_position(
                 let window_size = Vec2::new(window.width(), window.height());
                 let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
                 let ndc_to_world =
-                    camera_transform.compute_matrix() * camera.projection_matrix.inverse();
+                    camera_transform.compute_matrix() * camera.projection_matrix().inverse();
                 let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
                 let world_pos: Vec2 = world_pos.truncate();
 
