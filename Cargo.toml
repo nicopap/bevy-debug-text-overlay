@@ -16,9 +16,9 @@ builtin-font = []
 default = ["debug", "builtin-font"]
 
 [dependencies]
-bevy = { version = "0.8.0", default-features = false, features = ["render"] }
+bevy = { version = "0.8.0", default-features = false, features = ["render", "bevy_asset"] }
 lazy_static = { version = "1.4", optional = true }
 
 [dev-dependencies]
-bevy = { version = "0.8.0", default-features = false, features = ["render", "x11"] }
+bevy = { version = "0.8.0", default-features = false, features = ["render", "x11", "bevy_asset"] }
 # bevy-inspector-egui = { version = "0.8" }

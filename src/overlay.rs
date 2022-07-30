@@ -205,10 +205,6 @@ fn update_messages_as_per_commands(
         font: font.0.clone(),
         font_size: options.font_size,
     };
-    let text_align = TextAlignment {
-        horizontal: HorizontalAlign::Left,
-        ..Default::default()
-    };
     let current_time = time.seconds_since_startup();
     let iterator = channels.receiver.lock().unwrap();
     for Command::Refresh { key, color, text, timeout } in iterator.try_iter() {
@@ -227,15 +223,13 @@ fn update_messages_as_per_commands(
             }
         } else {
             let entity = cmds
-                .spawn_bundle(TextBundle {
-                    text: Text::with_section(text, text_style(color), text_align),
-                    style: Style {
+                .spawn_bundle(
+                    TextBundle::from_section(text, text_style(color)).with_style(Style {
                         position_type: PositionType::Absolute,
                         ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    ..Default::default()
-                })
+                    }),
+                )
+                .insert(Visibility { is_visible: false })
                 .insert(Message::new(timeout + current_time))
                 .id();
             key_entities.insert(key, entity);
