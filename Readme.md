@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "3.0"
+bevy-debug-text-overlay = "4.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -140,12 +140,13 @@ I'm welcoming contributions if you have any fixes:
   upgrade from `2.0.0` without changing your code)
 * `4.0.0`: **Breaking**: bump bevy version to `0.9` (you should be able to
   upgrade from `2.0.0` without changing your code)
+* `4.0.1`: Fix the README "Usage" version
 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
-| 0.9  | 4.0.0 |
+| 0.9  | 4.0.1 |
 | 0.8  | 3.0.0 |
 | 0.7  | 2.0.0 |
 | 0.6  | 1.0.0 |
