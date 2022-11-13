@@ -22,12 +22,12 @@ struct ForShow {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 }
 
 fn screen_print_text(time: Res<Time>) {
     let delta = time.delta_seconds_f64();
-    let current_time = time.seconds_since_startup();
+    let current_time = time.elapsed_seconds_f64();
     let at_interval = |t: f64| current_time % t < delta;
     let x = (13, 3.4);
     let show = ForShow {
@@ -65,7 +65,7 @@ fn screen_print_text(time: Res<Time>) {
 
 fn show_fps(time: Res<Time>, mut deltas: Local<Vec<f32>>, mut ring_ptr: Local<usize>) {
     let delta = time.delta_seconds_f64();
-    let current_time = time.seconds_since_startup();
+    let current_time = time.elapsed_seconds_f64();
     let at_interval = |t: f64| current_time % t < delta;
     if *ring_ptr >= 4096 {
         *ring_ptr = 0;
@@ -90,7 +90,7 @@ fn show_cursor_position(
     camera: Query<(&Camera, &GlobalTransform)>,
 ) {
     let delta = time.delta_seconds_f64();
-    let current_time = time.seconds_since_startup();
+    let current_time = time.elapsed_seconds_f64();
     let at_interval = |t: f64| current_time % t < delta;
     if at_interval(0.5) {
         let (camera, camera_transform) = camera.single();

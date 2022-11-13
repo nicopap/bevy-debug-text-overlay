@@ -153,6 +153,7 @@ impl Message {
     }
 }
 
+#[derive(Resource)]
 struct Options {
     font: Option<&'static str>,
     font_size: f32,
@@ -168,6 +169,7 @@ impl<'a> From<&'a OverlayPlugin> for Options {
     }
 }
 
+#[derive(Resource)]
 struct OverlayFont(Handle<Font>);
 impl FromWorld for OverlayFont {
     fn from_world(world: &mut World) -> Self {
@@ -205,7 +207,7 @@ fn update_messages_as_per_commands(
         font: font.0.clone(),
         font_size: options.font_size,
     };
-    let current_time = time.seconds_since_startup();
+    let current_time = time.elapsed_seconds_f64();
     let iterator = channels.receiver.lock().unwrap();
     for Command::Refresh { key, color, text, timeout } in iterator.try_iter() {
         let color = color.unwrap_or(options.color);
@@ -223,14 +225,16 @@ fn update_messages_as_per_commands(
             }
         } else {
             let entity = cmds
-                .spawn_bundle(
+                .spawn(
                     TextBundle::from_section(text, text_style(color)).with_style(Style {
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     }),
                 )
-                .insert(Visibility { is_visible: false })
-                .insert(Message::new(timeout + current_time))
+                .insert((
+                    Visibility { is_visible: false },
+                    Message::new(timeout + current_time),
+                ))
                 .id();
             key_entities.insert(key, entity);
         }
@@ -242,8 +246,9 @@ fn layout_messages(
     mut line_sizes: Local<Blocks<Entity, f32>>,
     time: Res<Time>,
 ) {
-    for (entity, mut style, mut vis, Node { size }, text) in messages.iter_mut() {
-        let is_expired = text.expiration < time.seconds_since_startup();
+    for (entity, mut style, mut vis, node, text) in messages.iter_mut() {
+        let size = node.size();
+        let is_expired = text.expiration < time.elapsed_seconds_f64();
         if vis.is_visible == is_expired {
             vis.is_visible = !is_expired;
             if !is_expired {

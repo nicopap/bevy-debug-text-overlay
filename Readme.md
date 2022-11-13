@@ -138,11 +138,14 @@ I'm welcoming contributions if you have any fixes:
   upgrade from `1.0.0` without changing your code)
 * `3.0.0`: **Breaking**: bump bevy version to `0.8` (you should be able to
   upgrade from `2.0.0` without changing your code)
+* `4.0.0`: **Breaking**: bump bevy version to `0.9` (you should be able to
+  upgrade from `2.0.0` without changing your code)
 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.9  | 4.0.0 |
 | 0.8  | 3.0.0 |
 | 0.7  | 2.0.0 |
 | 0.6  | 1.0.0 |
