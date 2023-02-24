@@ -1,12 +1,11 @@
-use bevy::prelude::*;
-use bevy::render::camera::RenderTarget;
+use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_debug_text_overlay::{screen_print, OverlayPlugin};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // !!!!IMPORTANT!!!! Add the OverlayPlugin here
-        .add_plugin(OverlayPlugin { font_size: 32.0, ..Default::default() })
+        .add_plugin(OverlayPlugin { font_size: 32.0, ..default() })
         .add_startup_system(setup)
         .add_system(screen_print_text)
         .add_system(show_fps)
@@ -85,7 +84,7 @@ fn show_fps(time: Res<Time>, mut deltas: Local<Vec<f32>>, mut ring_ptr: Local<us
 }
 
 fn show_cursor_position(
-    windows: Res<Windows>,
+    primary_query: Query<&Window, With<PrimaryWindow>>,
     time: Res<Time>,
     camera: Query<(&Camera, &GlobalTransform)>,
 ) {
@@ -94,19 +93,17 @@ fn show_cursor_position(
     let at_interval = |t: f64| current_time % t < delta;
     if at_interval(0.5) {
         let (camera, camera_transform) = camera.single();
-        if let RenderTarget::Window(window) = camera.target {
-            let window = windows.get(window).unwrap();
-            if let Some(screen_pos) = window.cursor_position() {
-                let window_size = Vec2::new(window.width(), window.height());
-                let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
-                let ndc_to_world =
-                    camera_transform.compute_matrix() * camera.projection_matrix().inverse();
-                let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
-                let world_pos: Vec2 = world_pos.truncate();
+        let Ok(window) = primary_query.get_single() else { return; };
+        if let Some(screen_pos) = window.cursor_position() {
+            let window_size = Vec2::new(window.width(), window.height());
+            let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
+            let ndc_to_world =
+                camera_transform.compute_matrix() * camera.projection_matrix().inverse();
+            let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
+            let world_pos: Vec2 = world_pos.truncate();
 
-                screen_print!("World coords: {:.3}/{:.3}", world_pos.x, world_pos.y);
-                screen_print!("Window coords: {:.3}/{:.3}", screen_pos.x, screen_pos.y);
-            }
+            screen_print!("World coords: {:.3}/{:.3}", world_pos.x, world_pos.y);
+            screen_print!("Window coords: {:.3}/{:.3}", screen_pos.x, screen_pos.y);
         }
     }
 }

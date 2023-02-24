@@ -19,13 +19,12 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "4.0"
+bevy-debug-text-overlay = "5.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
 1. Add the `OverlayPlugin` to your app
-2. Add a `UiCameraBundle` entity
-3. Use the `screen_print!` macro wherever you want, just use it like you would
+2. Use the `screen_print!` macro wherever you want, just use it like you would
    use `println!`, no need to pass special arguments.
 
 This will display on the top left of the screen the text for a short time.
@@ -48,11 +47,11 @@ fn main() {
         .run();
 }
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 }
 // Notice how we didn't have to add any special system parameters
 fn screen_print_text(time: Res<Time>) {
-    let current_time = time.seconds_since_startup();
+    let current_time = time.elapsed_seconds_f64();
     let at_interval = |t: f64| current_time % t < time.delta_seconds_f64();
     let x = (13, 3.4, vec![1,2,3,4,5,6,7,8]);
     if at_interval(0.1) {
@@ -99,7 +98,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "3.0", default-features = false, features = ["builtin-font"] }
+bevy-debug-text-overlay = { version = "5.0", default-features = false, features = ["builtin-font"] }
 ```
 
 Now when making your release build, you should use
@@ -141,11 +140,14 @@ I'm welcoming contributions if you have any fixes:
 * `4.0.0`: **Breaking**: bump bevy version to `0.9` (you should be able to
   upgrade from `2.0.0` without changing your code)
 * `4.0.1`: Fix the README "Usage" version
+* `5.0.0`:  **Breaking**: bump bevy version to `0.9` (you should be able to
+  upgrade from `2.0.0` without changing your code)
 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.10 | 5.0.0 |
 | 0.9  | 4.0.1 |
 | 0.8  | 3.0.0 |
 | 0.7  | 2.0.0 |

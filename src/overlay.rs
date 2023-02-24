@@ -231,10 +231,7 @@ fn update_messages_as_per_commands(
                         ..Default::default()
                     }),
                 )
-                .insert((
-                    Visibility { is_visible: false },
-                    Message::new(timeout + current_time),
-                ))
+                .insert((Visibility::Hidden, Message::new(timeout + current_time)))
                 .id();
             key_entities.insert(key, entity);
         }
@@ -244,13 +241,16 @@ fn update_messages_as_per_commands(
 fn layout_messages(
     mut messages: Query<(Entity, &mut Style, &mut Visibility, &Node, &Message)>,
     mut line_sizes: Local<Blocks<Entity, f32>>,
+    // position: Res<crate::DebugOverlayLocation>,
     time: Res<Time>,
 ) {
+    use Visibility::{Hidden, Visible};
     for (entity, mut style, mut vis, node, text) in messages.iter_mut() {
         let size = node.size();
         let is_expired = text.expiration < time.elapsed_seconds_f64();
-        if vis.is_visible == is_expired {
-            vis.is_visible = !is_expired;
+        let is_visible = *vis == Visible;
+        if is_visible == is_expired {
+            *vis = if is_visible { Hidden } else { Visible };
             if !is_expired {
                 style.position.left = Val::Px(0.0);
                 let offset = line_sizes.insert_size(entity, size.y);
@@ -291,11 +291,12 @@ impl Default for OverlayPlugin {
         }
     }
 }
+
 impl Plugin for OverlayPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource::<Options>(self.into())
             .init_resource::<OverlayFont>()
-            .add_system(layout_messages.after("update_line"))
-            .add_system(update_messages_as_per_commands.label("update_line"));
+            .add_system(layout_messages)
+            .add_system(update_messages_as_per_commands.before(layout_messages));
     }
 }
