@@ -109,15 +109,6 @@ cargo build --release --no-default-features
 I'm aware that it can be cumbersome for some, please fill an issue if this
 really doesn't mix well with your own workflow.
 
-## Notes on performance
-
-It seems that built without compiler optimization, displaying text on screen in
-bevy is a CPU hog, not sure why but it is (shrug). I designed the plugin with
-performance in mind, but the culprit is bevy not me.
-
-You might be interested in [enabling optimizations for dependencies in your debug
-builds](https://bevy-cheatbook.github.io/pitfalls/performance.html).
-
 ## Known limitations
 
 I'm welcoming contributions if you have any fixes:
