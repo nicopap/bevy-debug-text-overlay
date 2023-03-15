@@ -14,14 +14,26 @@ impl bevy::prelude::Plugin for OverlayPlugin {
 
 #[macro_export]
 macro_rules! screen_print {
+    (push, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
+        let _ = ($color, format!($text $(, $fmt_args)*));
+    }};
     (col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
         let _ = ($color, format!($text $(, $fmt_args)*));
+    }};
+    (push, sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
+        let _ = ($color, $timeout, format!($text $(, $fmt_args)*));
     }};
     (sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
         let _ = ($color, $timeout, format!($text $(, $fmt_args)*));
     }};
+    (push, sec: $timeout:expr, $text:expr $(, $fmt_args:expr)*) => {{
+        let _ = ($timeout, format!($text $(, $fmt_args)*));
+    }};
     (sec: $timeout:expr, $text:expr $(, $fmt_args:expr)*) => {{
         let _ = ($timeout, format!($text $(, $fmt_args)*));
+    }};
+    (push, $text:expr $(, $fmt_args:expr)*) => {{
+        let _ = format!($text $(, $fmt_args)*);
     }};
     ($text:expr $(, $fmt_args:expr)*) => {{
         let _ = format!($text $(, $fmt_args)*);

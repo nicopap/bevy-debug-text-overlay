@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "5.0"
+bevy-debug-text-overlay = "5.1"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -129,16 +129,19 @@ I'm welcoming contributions if you have any fixes:
 * `3.0.0`: **Breaking**: bump bevy version to `0.8` (you should be able to
   upgrade from `2.0.0` without changing your code)
 * `4.0.0`: **Breaking**: bump bevy version to `0.9` (you should be able to
-  upgrade from `2.0.0` without changing your code)
+  upgrade from `3.0.0` without changing your code)
 * `4.0.1`: Fix the README "Usage" version
-* `5.0.0`:  **Breaking**: bump bevy version to `0.9` (you should be able to
-  upgrade from `2.0.0` without changing your code)
-
+* `5.0.0`:  **Breaking**: bump bevy version to `0.10` (you should be able to
+  upgrade from `4.0.1` without changing your code)
+* `5.1.0`:  Add the `push` option to `screen_print!` macro, this allows
+  printing multiple messages from the same macro call, this makes the macro
+  usable in loops, or for messages that makes sense to duplicate on screen.
+ 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
-| 0.10 | 5.0.0 |
+| 0.10 | 5.1.0 |
 | 0.9  | 4.0.1 |
 | 0.8  | 3.0.0 |
 | 0.7  | 2.0.0 |

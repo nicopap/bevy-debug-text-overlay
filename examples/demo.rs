@@ -39,25 +39,39 @@ fn screen_print_text(time: Res<Time>) {
         field_2: "Hello world",
         field_3: vec![5, 2, 9, 1],
     };
-    if at_interval(2.0) {
-        screen_print!(sec: 0.5, "every 2:{x:?}");
+    if at_interval(3.123) {
+        let colors = [
+            Color::RED,
+            Color::ORANGE,
+            Color::YELLOW,
+            Color::GREEN,
+            Color::CYAN,
+            Color::BLUE,
+            Color::VIOLET,
+        ];
+        for (i, color) in colors.iter().enumerate() {
+            screen_print!(push, sec: 1.9384, col: *color, "seven messages each 3 seconds: {i}");
+        }
     }
-    if at_interval(5.0) {
-        screen_print!(sec: 2.0, "every 5:{}", &x.0)
+    if at_interval(2.1343) {
+        screen_print!(sec: 0.512, "every 2:{x:?}");
     }
-    if at_interval(10.0) {
+    if at_interval(4.9332) {
+        screen_print!(sec: 1.934, "every 5:{}", &x.0)
+    }
+    if at_interval(9.9031) {
         screen_print!("every 10secs: {:.1}\n{mut_show:#?}", show.field_1)
     }
     mut_show.field_1 = 34.34234;
-    if at_interval(13.0) {
+    if at_interval(12.934) {
         let col = Color::RED;
         screen_print!(col: col, "every 13: {}, {:?}", show.field_2, show.field_3)
     }
-    if at_interval(5.0) {
+    if at_interval(4.832) {
         let col = Color::PINK;
-        screen_print!(sec: 3.0, col: col, "every 30: {mut_show:?}");
+        screen_print!(sec: 3.2123, col: col, "every 30: {mut_show:?}");
     }
-    if at_interval(0.1) {
+    if at_interval(0.13243) {
         screen_print!("current time: {current_time:.2}")
     }
 }
