@@ -5,11 +5,9 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // !!!!IMPORTANT!!!! Add the OverlayPlugin here
-        .add_plugin(OverlayPlugin { font_size: 32.0, ..default() })
-        .add_startup_system(setup)
-        .add_system(screen_print_text)
-        .add_system(show_fps)
-        .add_system(show_cursor_position)
+        .add_plugins(OverlayPlugin { font_size: 23.0, ..default() })
+        .add_systems(Startup, setup)
+        .add_systems(Update, (screen_print_text, show_fps, show_cursor_position))
         .run();
 }
 

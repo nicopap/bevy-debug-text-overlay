@@ -214,41 +214,15 @@ impl Message {
 
 #[derive(Resource)]
 struct Options {
-    font: Option<&'static str>,
     font_size: f32,
     color: Color,
 }
 impl<'a> From<&'a OverlayPlugin> for Options {
     fn from(plugin: &'a OverlayPlugin) -> Self {
         Self {
-            font: plugin.font,
             color: plugin.fallback_color,
             font_size: plugin.font_size,
         }
-    }
-}
-
-#[derive(Resource)]
-struct OverlayFont(Handle<Font>);
-impl FromWorld for OverlayFont {
-    fn from_world(world: &mut World) -> Self {
-        let options = world.get_resource::<Options>().unwrap();
-        let assets = world.get_resource::<AssetServer>().unwrap();
-        let font = match options.font {
-            Some(font) => assets.load(font),
-            #[cfg(not(feature = "builtin-font"))]
-            None => panic!(
-                "No default font supplied, please either set the `builtin-font` \
-                 flag or provide your own font file by setting the `font` field of \
-                 `OverlayPlugin` to `Some(thing)`"
-            ),
-            #[cfg(feature = "builtin-font")]
-            None => world.get_resource_mut::<Assets<Font>>().unwrap().add(
-                Font::try_from_bytes(include_bytes!("screen_debug_text.ttf").to_vec())
-                    .expect("The hardcoded builtin font is valid, this should never fail."),
-            ),
-        };
-        Self(font)
     }
 }
 
@@ -283,13 +257,12 @@ fn update_messages_as_per_commands(
     mut cmds: Commands,
     time: Res<Time>,
     options: Res<Options>,
-    font: Res<OverlayFont>,
 ) {
     let channels = &COMMAND_CHANNELS;
     let text_style = |color| TextStyle {
         color,
-        font: font.0.clone(),
         font_size: options.font_size,
+        ..Default::default()
     };
     let current_time = time.elapsed_seconds_f64();
     let mut spawn_new = |text, color, timeout| {
@@ -352,8 +325,8 @@ fn layout_messages(
             *vis = if is_visible { Hidden } else { Visible };
             if !is_expired {
                 let offset = line_sizes.insert_size(entity, size.y);
-                style.position.top = Val::Px(offset);
-                style.position.left = Val::Px(0.0);
+                style.top = Val::Px(offset);
+                style.left = Val::Px(0.0);
             } else {
                 line_sizes.remove(entity);
             }
@@ -367,14 +340,6 @@ fn layout_messages(
 /// You can manage some of the text properties by setting the fields of the
 /// plugin.
 pub struct OverlayPlugin {
-    /// The font to use, by default it is a variant of adobe's SourcePro
-    /// only containing ascii characters.
-    ///
-    /// If the `builtin-font` flag is disabled, you must set this to `Some(thing)`,
-    /// otherwise the plugin will panic at initialization.
-    ///
-    /// You can provide your own font by setting this to `Some("path/to/font.ttf")`.
-    pub font: Option<&'static str>,
     /// The color to use when none are specified in [`screen_print!`], by
     /// default it is yellow.
     pub fallback_color: Color,
@@ -383,19 +348,15 @@ pub struct OverlayPlugin {
 }
 impl Default for OverlayPlugin {
     fn default() -> Self {
-        Self {
-            font: None,
-            fallback_color: Color::YELLOW,
-            font_size: 13.0,
-        }
+        Self { fallback_color: Color::YELLOW, font_size: 13.0 }
     }
 }
 
 impl Plugin for OverlayPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource::<Options>(self.into())
-            .init_resource::<OverlayFont>()
-            .add_system(layout_messages)
-            .add_system(update_messages_as_per_commands.before(layout_messages));
+        app.insert_resource::<Options>(self.into()).add_systems(
+            Update,
+            (update_messages_as_per_commands, layout_messages).chain(),
+        );
     }
 }

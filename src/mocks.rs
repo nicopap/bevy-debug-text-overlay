@@ -4,7 +4,6 @@
 //! disabling debug mode.
 #[derive(Default)]
 pub struct OverlayPlugin {
-    pub font: Option<&'static str>,
     pub fallback_color: bevy::prelude::Color,
     pub font_size: f32,
 }

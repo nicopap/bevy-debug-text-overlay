@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "5.1"
+bevy-debug-text-overlay = "6"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -41,7 +41,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // !!!!IMPORTANT!!!! Add the OverlayPlugin here
-        .add_plugin(OverlayPlugin { font_size: 32.0, ..default() })
+        .add_plugin(OverlayPlugin { font_size: 23.0, ..default() })
         .add_startup_system(setup)
         .add_system(screen_print_text)
         .run();
@@ -77,8 +77,8 @@ https://user-images.githubusercontent.com/26321040/158537677-e9339fd0-3bed-4a83-
 
 #### `builtin-font`
 
-The plugin provides its own ascii font by default, but if you want to disable
-it, you can disable the `builtin-font` cargo feature.
+This feature does nothing else than enable bevy's `bevy/default_font` feature.
+This is kept for legacy purposes.
 
 #### `debug`
 
@@ -136,11 +136,16 @@ I'm welcoming contributions if you have any fixes:
 * `5.1.0`:  Add the `push` option to `screen_print!` macro, this allows
   printing multiple messages from the same macro call, this makes the macro
   usable in loops, or for messages that makes sense to duplicate on screen.
+* `6.0.0`:  **Breaking**: bump bevy version to `0.11`
+  * Remove the `font` field from `Options` and `OverlayPlugin`, we now use the
+    bevy default font. Set it yourself if you want to use something else than
+    the default font.
  
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.11 | 6.0.0 |
 | 0.10 | 5.1.0 |
 | 0.9  | 4.0.1 |
 | 0.8  | 3.0.0 |
@@ -156,8 +161,3 @@ change in the future.
 ## License
 
 This library is licensed under Apache 2.0.
-
-### Font
-
-The font in `screen_debug_text.ttf` is derived from Adobe SourceSans, licensed
-under the SIL OFL. see file at `licenses/SIL Open Font License.txt`.
