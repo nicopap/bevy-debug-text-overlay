@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "6.0.0"
+bevy-debug-text-overlay = "7.0.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -98,7 +98,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "6.0.0", default-features = false, features = ["builtin-font"] }
+bevy-debug-text-overlay = { version = "7.0.0", default-features = false, features = ["builtin-font"] }
 ```
 
 Now when making your release build, you should use
@@ -146,7 +146,7 @@ I'm welcoming contributions if you have any fixes:
 
 | bevy | latest supporting version      |
 |------|--------|
-| 0.12 | 6.0.0 |
+| 0.12 | 7.0.0 |
 | 0.11 | 6.0.0 |
 | 0.10 | 5.1.0 |
 | 0.9  | 4.0.1 |
