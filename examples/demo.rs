@@ -32,7 +32,7 @@ fn screen_print_text(time: Res<Time>) {
         field_2: "Hello world",
         field_3: vec![1, 2, 3, 4],
     };
-    let mut mut_show = &mut ForShow {
+    let mut_show = &mut ForShow {
         field_1: current_time + 30.0,
         field_2: "Hello world",
         field_3: vec![5, 2, 9, 1],
@@ -105,7 +105,9 @@ fn show_cursor_position(
     let at_interval = |t: f64| current_time % t < delta;
     if at_interval(0.5) {
         let (camera, camera_transform) = camera.single();
-        let Ok(window) = primary_query.get_single() else { return; };
+        let Ok(window) = primary_query.get_single() else {
+            return;
+        };
         if let Some(screen_pos) = window.cursor_position() {
             let window_size = Vec2::new(window.width(), window.height());
             let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;

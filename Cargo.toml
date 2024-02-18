@@ -11,23 +11,22 @@ version = "7.0.0"
 edition = "2021"
 
 [features]
-debug = ["lazy_static", "bevy/bevy_render", "bevy/bevy_asset", "bevy/bevy_ui", "bevy/bevy_text", "bevy/bevy_core_pipeline"]
-builtin-font = ["bevy/default_font"]
-default = ["debug", "builtin-font"]
+default = ["debug"]
+debug = ["lazy_static", "bevy/bevy_render", "bevy/bevy_asset", "bevy/bevy_ui", "bevy/bevy_text", "bevy/bevy_core_pipeline", "bevy/default_font"]
 
 [dependencies]
-bevy = { version = "0.12", default-features = false }
+bevy = { version = "0.13", default-features = false }
 lazy_static = { version = "1.4", optional = true }
 
 [dev-dependencies]
-bevy = { version = "0.12", default-features = false, features = [
+bevy = { version = "0.13", default-features = false, features = [
   "bevy_render", "x11", "bevy_core_pipeline", "bevy_asset", "bevy_sprite"
 ] }
 # bevy-inspector-egui = { version = "0.8" }
 
 [package.metadata.release]
 pre-release-replacements = [
-  {search="\\| 0.12 \\| [0-9.]* \\|",replace="| 0.12 | {{version}} |",file="Readme.md"},
+  {search="\\| 0.13 \\| [0-9.]* \\|",replace="| 0.13 | {{version}} |",file="Readme.md"},
   {search="bevy-debug-text-overlay = \\{ version = \"[0-9.]*\"",replace="bevy-debug-text-overlay = { version = \"{{version}}\"",file="Readme.md"},
   {search="bevy-debug-text-overlay = \"[0-9.]*\"",replace="bevy-debug-text-overlay = \"{{version}}\"",file="Readme.md"},
 ]

@@ -39,11 +39,10 @@ use bevy_debug_text_overlay::{screen_print, OverlayPlugin};
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
         // !!!!IMPORTANT!!!! Add the OverlayPlugin here
-        .add_plugin(OverlayPlugin { font_size: 23.0, ..default() })
-        .add_startup_system(setup)
-        .add_system(screen_print_text)
+        .add_plugins((DefaultPlugins, OverlayPlugin { font_size: 23.0, ..default() }))
+        .add_systems(Startup, setup)
+        .add_systems(Update, screen_print_text)
         .run();
 }
 fn setup(mut commands: Commands) {
@@ -75,11 +74,6 @@ https://user-images.githubusercontent.com/26321040/158537677-e9339fd0-3bed-4a83-
 
 ### Cargo features
 
-#### `builtin-font`
-
-This feature does nothing else than enable bevy's `bevy/default_font` feature.
-This is kept for legacy purposes.
-
 #### `debug`
 
 It is possible to replace `screen_print!` by an empty macro by disabling the
@@ -98,7 +92,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "7.0.0", default-features = false, features = ["builtin-font"] }
+bevy-debug-text-overlay = { version = "7.0.0", default-features = false }
 ```
 
 Now when making your release build, you should use
@@ -141,11 +135,13 @@ I'm welcoming contributions if you have any fixes:
     bevy default font. Set it yourself if you want to use something else than
     the default font.
 * `7.0.0`:  **Breaking**: bump bevy version to `0.12`
+* `8.0.0`:  **Breaking**: bump bevy version to `0.13`, remove `builtin-font` feature.
  
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.13 | 7.0.0 |
 | 0.12 | 7.0.0 |
 | 0.11 | 6.0.0 |
 | 0.10 | 5.1.0 |

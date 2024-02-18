@@ -28,10 +28,8 @@
 //! Each individual invocation of [`screen_print!`] gets a unique
 //! [`InvocationSiteKey`], and a corresponding `Entity`.
 use std::fmt;
-use std::sync::{
-    mpsc::{self, Receiver, SyncSender},
-    Mutex,
-};
+use std::sync::mpsc::{self, Receiver, SyncSender};
+use std::sync::Mutex;
 
 use bevy::{prelude::*, utils::HashMap};
 use lazy_static::lazy_static;
@@ -356,7 +354,7 @@ impl Plugin for OverlayPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource::<Options>(self.into()).add_systems(
             Update,
-            (update_messages_as_per_commands, layout_messages).chain(),
+            (update_messages_as_per_commands, layout_messages).chain_ignore_deferred(),
         );
     }
 }
