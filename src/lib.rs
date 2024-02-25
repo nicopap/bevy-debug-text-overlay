@@ -7,7 +7,7 @@ mod block;
 #[cfg(feature = "debug")]
 mod overlay;
 #[cfg(feature = "debug")]
-pub use overlay::{CommandChannels, InvocationSiteKey, OverlayPlugin, COMMAND_CHANNELS};
+pub use overlay::{command_channels, CommandChannels, InvocationSiteKey, OverlayPlugin};
 
 #[cfg(not(feature = "debug"))]
 mod mocks;

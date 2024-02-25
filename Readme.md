@@ -136,7 +136,12 @@ I'm welcoming contributions if you have any fixes:
     the default font.
 * `7.0.0`:  **Breaking**: bump bevy version to `0.12`
 * `8.0.0`:  **Breaking**: bump bevy version to `0.13`, remove `builtin-font` feature.
- 
+* `8.1.0`:
+  * Use `$crate::` inside the `screen_print!` macro, so that it can be
+    invoked with the crate path
+  * Do not panic on exceeding 4096 prints per frame, instead log an error
+  * Use the std `OnceLock` over `lazy_static!`
+
 ### Version matrix
 
 | bevy | latest supporting version      |

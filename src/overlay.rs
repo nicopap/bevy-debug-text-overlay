@@ -29,23 +29,20 @@
 //! [`InvocationSiteKey`], and a corresponding `Entity`.
 use std::fmt;
 use std::sync::mpsc::{self, Receiver, SyncSender};
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
 use bevy::{prelude::*, utils::HashMap};
-use lazy_static::lazy_static;
 
 use crate::block::Blocks;
 
 const MAX_LINES: usize = 4096;
-lazy_static! {
-    #[doc(hidden)]
-    pub static ref COMMAND_CHANNELS: CommandChannels = {
-        let (sender, receiver) = mpsc::sync_channel(MAX_LINES);
-        CommandChannels {
-            sender,
-            receiver: Mutex::new(receiver),
-        }
-    };
+
+static COMMAND_CHANNELS: OnceLock<CommandChannels> = OnceLock::new();
+
+#[doc(hidden)]
+pub fn command_channels() -> &'static CommandChannels {
+    let (sender, receiver) = mpsc::sync_channel(MAX_LINES);
+    COMMAND_CHANNELS.get_or_init(|| CommandChannels { sender, receiver: Mutex::new(receiver) })
 }
 
 // TODO: better API?
@@ -95,38 +92,38 @@ lazy_static! {
 #[macro_export]
 macro_rules! screen_print {
     (push, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl push, sec: 7.0, col: Some($color), $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl push, sec: 7.0, col: Some($color), $text $(, $fmt_args)*);
     };
     (col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl sec: 7.0, col: Some($color), $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: 7.0, col: Some($color), $text $(, $fmt_args)*);
     };
     (push, sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl push, sec: $timeout, col: Some($color), $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl push, sec: $timeout, col: Some($color), $text $(, $fmt_args)*);
     };
     (sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl sec: $timeout, col: Some($color), $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: $timeout, col: Some($color), $text $(, $fmt_args)*);
     };
     (push, sec: $timeout:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl push, sec: $timeout, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl push, sec: $timeout, col: None, $text $(, $fmt_args)*);
     };
     (sec: $timeout:expr, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl sec: $timeout, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: $timeout, col: None, $text $(, $fmt_args)*);
     };
     (push, $text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl push, sec: 7.0, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl push, sec: 7.0, col: None, $text $(, $fmt_args)*);
     };
     ($text:expr $(, $fmt_args:expr)*) => {
-        screen_print!(@impl sec: 7.0, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: 7.0, col: None, $text $(, $fmt_args)*);
     };
     (@impl sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
-        use $crate::{InvocationSiteKey, COMMAND_CHANNELS};
+        use $crate::{InvocationSiteKey, command_channels};
         let key = InvocationSiteKey { file: file!(), line: line!(), column: column!() };
-        COMMAND_CHANNELS.refresh_text(key, || format!($text $(, $fmt_args)*), $timeout as f64, $color);
+        command_channels().refresh_text(key, || format!($text $(, $fmt_args)*), $timeout as f64, $color);
     }};
     (@impl push, sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
-        use $crate::{InvocationSiteKey, COMMAND_CHANNELS};
+        use $crate::{InvocationSiteKey, command_channels};
         let key = InvocationSiteKey { file: file!(), line: line!(), column: column!() };
-        COMMAND_CHANNELS.push_text(key, || format!($text $(, $fmt_args)*), $timeout as f64, $color);
+        command_channels().push_text(key, || format!($text $(, $fmt_args)*), $timeout as f64, $color);
     }};
 }
 
@@ -181,9 +178,10 @@ impl CommandChannels {
     ) {
         let text = format!("{key} {}\n", text());
         let cmd = Command::Refresh { text, key, color, timeout };
-        self.sender
-            .try_send(cmd)
-            .expect("Number of debug messages exceeds limit!");
+        let sent = self.sender.try_send(cmd).is_ok();
+        if !sent {
+            error!("Number of debug messages sent in one frame exceeds limit of {MAX_LINES}");
+        }
     }
     pub fn push_text(
         &self,
@@ -194,9 +192,10 @@ impl CommandChannels {
     ) {
         let text = format!("{key} {}\n", text());
         let cmd = Command::Push { text, color, timeout };
-        self.sender
-            .try_send(cmd)
-            .expect("Number of debug messages exceeds limit!");
+        let sent = self.sender.try_send(cmd).is_ok();
+        if !sent {
+            error!("Number of debug messages sent in one frame exceeds limit of {MAX_LINES}");
+        }
     }
 }
 
@@ -256,7 +255,7 @@ fn update_messages_as_per_commands(
     time: Res<Time>,
     options: Res<Options>,
 ) {
-    let channels = &COMMAND_CHANNELS;
+    let channels = command_channels();
     let text_style = |color| TextStyle {
         color,
         font_size: options.font_size,

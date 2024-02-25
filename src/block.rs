@@ -77,7 +77,7 @@ where
         match gap {
             Some(Gap { index, gap_size }) if gap_size > &size => {
                 let gap = Block::Gap(*gap_size - size);
-                self.0.splice(index..=index, [to_insert, gap].into_iter());
+                self.0.splice(index..=index, [to_insert, gap]);
                 self.cleanup();
             }
             Some(Gap { index, .. }) => self.0[*index] = to_insert,
