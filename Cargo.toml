@@ -7,7 +7,7 @@ readme = "Readme.md"
 keywords = ["bevy", "debug", "overlay", "message"]
 categories = ["game-development", "development-tools"]
 repository = "https://github.com/nicopap/bevy-debug-text-overlay"
-version = "8.0.0"
+version = "8.1.0"
 edition = "2021"
 
 [features]
