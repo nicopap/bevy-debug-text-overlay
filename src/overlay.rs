@@ -31,6 +31,7 @@ use std::fmt;
 use std::sync::mpsc::{self, Receiver, SyncSender};
 use std::sync::{Mutex, OnceLock};
 
+use bevy::color::palettes::css;
 use bevy::{prelude::*, utils::HashMap};
 
 use crate::block::Blocks;
@@ -107,13 +108,13 @@ macro_rules! screen_print {
         $crate::screen_print!(@impl push, sec: $timeout, col: None, $text $(, $fmt_args)*);
     };
     (sec: $timeout:expr, $text:expr $(, $fmt_args:expr)*) => {
-        $crate::screen_print!(@impl sec: $timeout, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: $timeout, col: Option::<Srgba>::None, $text $(, $fmt_args)*);
     };
     (push, $text:expr $(, $fmt_args:expr)*) => {
-        $crate::screen_print!(@impl push, sec: 7.0, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl push, sec: 7.0, col: Option::<Srgba>::None, $text $(, $fmt_args)*);
     };
     ($text:expr $(, $fmt_args:expr)*) => {
-        $crate::screen_print!(@impl sec: 7.0, col: None, $text $(, $fmt_args)*);
+        $crate::screen_print!(@impl sec: 7.0, col: Option::<Srgba>::None, $text $(, $fmt_args)*);
     };
     (@impl sec: $timeout:expr, col: $color:expr, $text:expr $(, $fmt_args:expr)*) => {{
         use $crate::{InvocationSiteKey, command_channels};
@@ -174,8 +175,9 @@ impl CommandChannels {
         key: InvocationSiteKey,
         text: impl FnOnce() -> String,
         timeout: f64,
-        color: Option<Color>,
+        color: Option<impl Into<Color>>,
     ) {
+        let color = color.map(|c| c.into());
         let text = format!("{key} {}\n", text());
         let cmd = Command::Refresh { text, key, color, timeout };
         let sent = self.sender.try_send(cmd).is_ok();
@@ -188,8 +190,9 @@ impl CommandChannels {
         key: InvocationSiteKey,
         text: impl FnOnce() -> String,
         timeout: f64,
-        color: Option<Color>,
+        color: Option<impl Into<Color>>,
     ) {
+        let color = color.map(|c| c.into());
         let text = format!("{key} {}\n", text());
         let cmd = Command::Push { text, color, timeout };
         let sent = self.sender.try_send(cmd).is_ok();
@@ -345,7 +348,7 @@ pub struct OverlayPlugin {
 }
 impl Default for OverlayPlugin {
     fn default() -> Self {
-        Self { fallback_color: Color::YELLOW, font_size: 13.0 }
+        Self { fallback_color: css::YELLOW.into(), font_size: 13.0 }
     }
 }
 

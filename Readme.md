@@ -19,7 +19,7 @@ println-debugger, you will love this crate when working with bevy!
 
 ```toml
 [dependencies]
-bevy-debug-text-overlay = "8.1.0"
+bevy-debug-text-overlay = "14.0.0"
 ```
 
 This bevy plugin is fairly trivial to use. You must:
@@ -55,7 +55,7 @@ fn screen_print_text(time: Res<Time>) {
     let x = (13, 3.4, vec![1,2,3,4,5,6,7,8]);
     if at_interval(0.1) {
         let last_fps = 1.0 / time.delta_seconds();
-        screen_print!(col: Color::CYAN, "fps: {last_fps:.0}");
+        screen_print!(col: Color::AQUA, "fps: {last_fps:.0}");
         screen_print!("current time: {current_time:.2}")
     }
     if at_interval(2.0) {
@@ -92,7 +92,7 @@ debug = ["bevy-debug-text-overlay/debug"]
 default = ["debug"]
 
 # Manually specify features for bevy-debug-text-overlay (omitting "debug")
-bevy-debug-text-overlay = { version = "8.1.0", default-features = false }
+bevy-debug-text-overlay = { version = "14.0.0", default-features = false }
 ```
 
 Now when making your release build, you should use
@@ -141,11 +141,16 @@ I'm welcoming contributions if you have any fixes:
     invoked with the crate path
   * Do not panic on exceeding 4096 prints per frame, instead log an error
   * Use the std `OnceLock` over `lazy_static!`
+* `14.0.0`:
+  * **Breaking**: bump bevy version to `0.14`
+  * `screen_print!` now accepts `Into<Color>` in compliance with `bevy 0.14` changes
+
 
 ### Version matrix
 
 | bevy | latest supporting version      |
 |------|--------|
+| 0.14 | 14.0.0 |
 | 0.13 | 8.1.0 |
 | 0.12 | 7.0.0 |
 | 0.11 | 6.0.0 |
